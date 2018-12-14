@@ -1,0 +1,11 @@
+{
+  "name": "trond-mods",
+  "version": "1.0.0",
+  "description": "A collection of codemods",
+  "repository": "github.com/hatlen/trond-mods",
+  "author": "Trond Fröding Hatlen <trondfroding@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": "11"
+  }
+}
