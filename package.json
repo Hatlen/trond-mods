@@ -7,5 +7,17 @@
   "license": "MIT",
   "engines": {
     "node": "11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-bridge",
+    "babel-jest": "^23.6.0",
+    "babel-plugin-tester": "^5.5.2",
+    "jest": "^23.6.0"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }

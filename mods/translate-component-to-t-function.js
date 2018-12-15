@@ -1,4 +1,4 @@
-const looksLike = require("./utils").looksLike;
+import { looksLike } from "./utils";
 
 export default function(babel) {
   const { types: t } = babel;

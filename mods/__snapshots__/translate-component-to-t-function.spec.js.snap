@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Translate-to-withNamespaces-t 1. Translate-to-withNamespaces-t: 1. Translate-to-withNamespaces-t 1`] = `
+"
+const C = () => (
+  <div>
+    <Translate
+      count={props.totalVisitors}
+      totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
+      i18nKey=\\"analyze.components.overview_story.total_views\\"
+    />
+  </div>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+var C = function C() {
+  return React.createElement(\\"div\\", null, t(\\"analyze.components.overview_story.total_views\\", {
+    count: props.totalVisitors,
+    totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
+  }));
+};
+"
+`;
