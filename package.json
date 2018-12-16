@@ -12,12 +12,15 @@
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.0",
     "@babel/preset-react": "^7.0.0",
+    "@babel/template": "^7.2.2",
     "babel-core": "^7.0.0-bridge",
     "babel-jest": "^23.6.0",
     "babel-plugin-tester": "^5.5.2",
     "jest": "^23.6.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "codemod": "git checkout *test* && codemod --plugin mods/translate-component-to-t-function.js mods && git diff *test*"
   }
 }
