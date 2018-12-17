@@ -11,7 +11,7 @@ export default function(babel) {
   return {
     name: "Translate-to-withNamespaces-t",
     visitor: {
-      JSXElement(path, { file }) {
+      JSXElement(path, { file, opts }) {
         if (
           looksLike(path.node, {
             openingElement: {
@@ -22,6 +22,7 @@ export default function(babel) {
           })
         ) {
           file.set("hadTranslate", true);
+          const options = getOptions(opts);
           const attributes = path.node.openingElement.attributes;
           const key = attributes.find(n => n.name.name === "i18nKey").value
             .value;
@@ -31,19 +32,48 @@ export default function(babel) {
 
           // transform <Translate i18nKey="key" name={props.name} />
           // to { t('key', { name: props.name }) }
+
+          const tFunctionCall = t.callExpression(t.identifier("t"), [
+            t.stringLiteral(key),
+            t.objectExpression(
+              objectPropertyNodes.map(node =>
+                t.objectProperty(
+                  t.identifier(node.name.name),
+                  node.value.expression
+                )
+              )
+            )
+          ]);
+
+          if (!options.allTranslations) {
+            throw new Error(
+              "You must provide an allTranslations object when initializing " +
+                "the plugin"
+            );
+          }
+
+          const translationContainsHTML = Object.keys(
+            options.allTranslations
+          ).find(localeKey => {
+            const translations = options.allTranslations[localeKey];
+            const translation = getTranslation(translations, key.split("."));
+            if (!translation) {
+              throw new Error(`Missing translation for ${localeKey}.${key}`);
+            }
+            if (typeof translation === "object") {
+              return Object.keys(translation).find(objectTranslationKey =>
+                translation[objectTranslationKey].match(/</)
+              );
+            } else {
+              return translation.match(/</);
+            }
+          });
+
           path.replaceWith(
             t.jsxExpressionContainer(
-              t.callExpression(t.identifier("t"), [
-                t.stringLiteral(key),
-                t.objectExpression(
-                  objectPropertyNodes.map(node =>
-                    t.objectProperty(
-                      t.identifier(node.name.name),
-                      node.value.expression
-                    )
-                  )
-                )
-              ])
+              translationContainsHTML
+                ? t.callExpression(t.identifier("safeT"), [tFunctionCall])
+                : tFunctionCall
             )
           );
         }
@@ -94,3 +124,14 @@ export default function(babel) {
     }
   };
 }
+
+const getTranslation = (translations, [key, ...rest]) => {
+  if (rest.length) {
+    return getTranslation(translations[key], rest);
+  }
+  return translations[key];
+};
+
+const getOptions = opts => ({
+  allTranslations: opts.allTranslations
+});

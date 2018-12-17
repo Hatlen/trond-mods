@@ -2,13 +2,67 @@
 
 exports[`Translate-to-withNamespaces-t 1. Translate-to-withNamespaces-t: 1. Translate-to-withNamespaces-t 1`] = `
 "
+const C = () => (
+  <div>
+    <Translate
+      count={props.totalVisitors}
+      totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
+      i18nKey=\\"key\\"
+    />
+  </div>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+var _reactI18next = require(\\"react-i18next\\");
+
+var C = function C() {
+  return React.createElement(\\"div\\", null, t(\\"key\\", {
+    count: props.totalVisitors,
+    totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
+  }));
+};
+"
+`;
+
+exports[`Translate-to-withNamespaces-t 2. Translate-to-withNamespaces-t: 2. Translate-to-withNamespaces-t 1`] = `
+"
+const C = () => (
+  <div>
+    <Translate
+      count={props.totalVisitors}
+      totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
+      i18nKey=\\"key_with_pluralization\\"
+    />
+  </div>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+var _reactI18next = require(\\"react-i18next\\");
+
+var C = function C() {
+  return React.createElement(\\"div\\", null, t(\\"key_with_pluralization\\", {
+    count: props.totalVisitors,
+    totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
+  }));
+};
+"
+`;
+
+exports[`Translate-to-withNamespaces-t 3. Translate-to-withNamespaces-t: 3. Translate-to-withNamespaces-t 1`] = `
+"
 // Simplified file without import or export
 const C = () => (
   <div>
     <Translate
       count={props.totalVisitors}
       totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
-      i18nKey=\\"analyze.components.overview_story.total_views\\"
+      i18nKey=\\"key_with_html\\"
     />
   </div>
 );
@@ -21,15 +75,44 @@ var _reactI18next = require(\\"react-i18next\\");
 
 // Simplified file without import or export
 var C = function C() {
-  return React.createElement(\\"div\\", null, t(\\"analyze.components.overview_story.total_views\\", {
+  return React.createElement(\\"div\\", null, safeT(t(\\"key_with_html\\", {
     count: props.totalVisitors,
     totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
-  }));
+  })));
 };
 "
 `;
 
-exports[`Translate-to-withNamespaces-t 2. Translate-to-withNamespaces-t: 2. Translate-to-withNamespaces-t 1`] = `
+exports[`Translate-to-withNamespaces-t 4. Translate-to-withNamespaces-t: 4. Translate-to-withNamespaces-t 1`] = `
+"
+// Simplified file without import or export
+const C = () => (
+  <div>
+    <Translate
+      count={props.totalVisitors}
+      totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
+      i18nKey=\\"key_with_pluralization_and_html\\"
+    />
+  </div>
+);
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+var _reactI18next = require(\\"react-i18next\\");
+
+// Simplified file without import or export
+var C = function C() {
+  return React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
+    count: props.totalVisitors,
+    totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
+  })));
+};
+"
+`;
+
+exports[`Translate-to-withNamespaces-t 5. Translate-to-withNamespaces-t: 5. Translate-to-withNamespaces-t 1`] = `
 "
 // Test with import
 import Translate from 'components/translate'
@@ -39,7 +122,7 @@ const C = () => (
     <Translate
       count={props.totalVisitors}
       totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
-      i18nKey=\\"analyze.components.overview_story.total_views\\"
+      i18nKey=\\"key_with_pluralization\\"
     />
   </div>
 );
@@ -59,7 +142,7 @@ var _reactI18next = require(\\"react-i18next\\");
 
 // Test with import
 var C = function C() {
-  return React.createElement(\\"div\\", null, t(\\"analyze.components.overview_story.total_views\\", {
+  return React.createElement(\\"div\\", null, t(\\"key_with_pluralization\\", {
     count: props.totalVisitors,
     totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
   }));

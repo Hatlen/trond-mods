@@ -5,7 +5,17 @@ const C = () => (
     <Translate
       count={props.totalVisitors}
       totalViews={numeral(props.totalVisitors).format("0,0")}
-      i18nKey="analyze.components.overview_story.total_views"
+      i18nKey="key"
+    />
+    <Translate
+      count={props.totalVisitors}
+      totalViews={numeral(props.totalVisitors).format("0,0")}
+      i18nKey="key_with_pluralization"
+    />
+    <Translate
+      count={props.totalVisitors}
+      totalViews={numeral(props.totalVisitors).format("0,0")}
+      i18nKey="key_with_html"
     />
     <Translate
       count={props.totalVisitors}

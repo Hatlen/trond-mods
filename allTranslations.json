@@ -1,0 +1,27 @@
+{
+  "allTranslations": {
+    "en": {
+      "key": "value",
+      "key_with_pluralization": {
+        "one": "one value",
+        "many": "many value"
+      },
+      "key_with_html": "<em>Welcome</em>",
+      "key_with_pluralization_and_html": {
+        "one": "no html",
+        "many": "<div>MANY!</div>"
+      }
+    },
+    "sv": {
+      "key": "värde",
+      "key_with_pluralization": {
+        "one": "1 värde"
+      },
+      "key_with_html": "<em>Welcome</em>",
+      "key_with_pluralization_and_html": {
+        "one": "no html",
+        "many": "<div>MANY!</div>"
+      }
+    }
+  }
+}
