@@ -1,9 +1,11 @@
 import template from "@babel/template";
 import { looksLike } from "../utils";
 
-const withNamespacesImportAST = template(`
+const withNamespacesImportAST = template(
+  `
   import { withNamespaces } from 'react-i18next';
-`)();
+`
+)();
 
 export default function(babel) {
   const { types: t } = babel;
@@ -24,8 +26,9 @@ export default function(babel) {
           file.set("hadTranslate", true);
           const options = getOptions(opts);
           const attributes = path.node.openingElement.attributes;
-          const key = attributes.find(n => n.name.name === "i18nKey").value
-            .value;
+          const key = attributes.find(
+            n => n.name.name === "i18nKey"
+          ).value.value;
           const objectPropertyNodes = attributes.filter(
             n => n.name.name !== "i18nKey"
           );
@@ -40,8 +43,7 @@ export default function(babel) {
                 t.objectProperty(
                   t.identifier(node.name.name),
                   node.value.expression
-                )
-              )
+                ))
             )
           ]);
 
@@ -61,9 +63,10 @@ export default function(babel) {
               throw new Error(`Missing translation for ${localeKey}.${key}`);
             }
             if (typeof translation === "object") {
-              return Object.keys(translation).find(objectTranslationKey =>
-                translation[objectTranslationKey].match(/</)
-              );
+              return Object.keys(
+                translation
+              ).find(objectTranslationKey =>
+                translation[objectTranslationKey].match(/</));
             } else {
               return translation.match(/</);
             }
@@ -85,16 +88,15 @@ export default function(babel) {
         exit(path, { file }) {
           if (file.get("hadTranslate")) {
             // Remove Translate import
-            const translateImportIndex = path.node.body.findIndex(node =>
-              looksLike(node, {
+            const translateImportIndex = path.node.body.findIndex(
+              node => looksLike(node, {
                 type: "ImportDeclaration",
-                specifiers: specifiers =>
-                  looksLike(specifiers[0], {
-                    type: "ImportDefaultSpecifier",
-                    local: {
-                      name: "Translate"
-                    }
-                  })
+                specifiers: specifiers => looksLike(specifiers[0], {
+                  type: "ImportDefaultSpecifier",
+                  local: {
+                    name: "Translate"
+                  }
+                })
               })
             );
 
@@ -103,23 +105,22 @@ export default function(babel) {
             }
 
             // Add withNamespacesImport
-            const hasWithNamespacesImport = path.node.body.find(node =>
-              looksLike(node, {
+            const hasWithNamespacesImport = path.node.body.find(
+              node => looksLike(node, {
                 type: "ImportDeclaration",
-                specifiers: specifiers =>
-                  looksLike(specifiers[0], {
-                    type: "ImportSpecifier",
-                    local: {
-                      name: "withNamespaces"
-                    }
-                  })
+                specifiers: specifiers => looksLike(specifiers[0], {
+                  type: "ImportSpecifier",
+                  local: {
+                    name: "withNamespaces"
+                  }
+                })
               })
             );
             if (!hasWithNamespacesImport) {
               path.unshiftContainer("body", withNamespacesImportAST);
 
-              const exportDeclaration = path.node.body.find(node =>
-                looksLike(node, {
+              const exportDeclaration = path.node.body.find(
+                node => looksLike(node, {
                   type: "ExportDefaultDeclaration"
                 })
               );

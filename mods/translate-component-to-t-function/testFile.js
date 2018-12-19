@@ -2,11 +2,7 @@ import Translate from "components/translate";
 
 const C = () => (
   <div>
-    <Translate
-      count={props.totalVisitors}
-      totalViews={numeral(props.totalVisitors).format("0,0")}
-      i18nKey="key"
-    />
+    <Translate i18nKey="key" />
     <Translate
       count={props.totalVisitors}
       totalViews={numeral(props.totalVisitors).format("0,0")}
