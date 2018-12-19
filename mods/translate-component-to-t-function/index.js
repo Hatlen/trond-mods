@@ -1,5 +1,5 @@
 import template from "@babel/template";
-import { looksLike } from "./utils";
+import { looksLike } from "../utils";
 
 const withNamespacesImportAST = template(`
   import { withNamespaces } from 'react-i18next';
@@ -117,6 +117,24 @@ export default function(babel) {
             );
             if (!hasWithNamespacesImport) {
               path.unshiftContainer("body", withNamespacesImportAST);
+
+              const exportDeclaration = path.node.body.find(node =>
+                looksLike(node, {
+                  type: "ExportDefaultDeclaration"
+                })
+              );
+              const exportDeclarationIndex = path.node.body.indexOf(
+                exportDeclaration
+              );
+              path
+                .get(`body.${exportDeclarationIndex}`)
+                .replaceWith(
+                  t.exportDefaultDeclaration(
+                    t.callExpression(t.identifier("withNamespaces"), [
+                      exportDeclaration.declaration
+                    ])
+                  )
+                );
             }
           }
         }

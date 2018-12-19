@@ -1,5 +1,5 @@
 import pluginTester from "babel-plugin-tester";
-import babelI18nPlugin from "./translate-component-to-t-function";
+import babelI18nPlugin from "./";
 
 pluginTester({
   plugin: babelI18nPlugin,
