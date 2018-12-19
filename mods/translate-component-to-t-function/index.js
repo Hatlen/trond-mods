@@ -36,16 +36,21 @@ export default function(babel) {
           // transform <Translate i18nKey="key" name={props.name} />
           // to { t('key', { name: props.name }) }
 
-          const tFunctionCall = t.callExpression(t.identifier("t"), [
-            t.stringLiteral(key),
-            t.objectExpression(
-              objectPropertyNodes.map(node =>
-                t.objectProperty(
-                  t.identifier(node.name.name),
-                  node.value.expression
-                ))
-            )
-          ]);
+          const tFunctionCall = t.callExpression(
+            t.identifier("t"),
+            [
+              t.stringLiteral(key),
+              objectPropertyNodes.length
+                ? t.objectExpression(
+                    objectPropertyNodes.map(node =>
+                      t.objectProperty(
+                        t.identifier(node.name.name),
+                        node.value.expression
+                      ))
+                  )
+                : null
+            ].filter(args => args)
+          );
 
           if (!options.allTranslations) {
             throw new Error(
