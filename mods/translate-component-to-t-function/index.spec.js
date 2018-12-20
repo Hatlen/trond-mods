@@ -46,6 +46,8 @@ const C = () => (
     />
   </div>
 );
+
+export default C;
         `.trim(),
     `
 const C = () => (
@@ -57,6 +59,8 @@ const C = () => (
     />
   </div>
 );
+
+export default C;
         `.trim(),
     `
 // Simplified file without import or export
@@ -69,6 +73,8 @@ const C = () => (
     />
   </div>
 );
+
+export default C;
         `.trim(),
     `
 // Simplified file without import or export
@@ -81,6 +87,8 @@ const C = () => (
     />
   </div>
 );
+
+export default C;
         `.trim()
   ]
 });
