@@ -37,7 +37,7 @@ pluginTester({
   snapshot: true,
   tests: [
     `
-const C = () => (
+const C = (props) => (
   <div>
     <Translate
       count={props.totalVisitors}

@@ -1,6 +1,6 @@
 import Translate from "components/translate";
 
-const C = () => (
+const C = props => (
   <div>
     <Translate i18nKey="key" />
     <Translate
