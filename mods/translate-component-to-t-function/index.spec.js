@@ -36,6 +36,7 @@ pluginTester({
   },
   snapshot: true,
   tests: [
+    // 1
     `
 const C = (props) => (
   <div>
@@ -49,8 +50,9 @@ const C = (props) => (
 
 export default C;
         `.trim(),
+    // 2
     `
-const C = () => (
+const C = ({ t }) => (
   <div>
     <Translate
       count={props.totalVisitors}
@@ -62,13 +64,14 @@ const C = () => (
 
 export default C;
         `.trim(),
+    // 3
     `
 // Simplified file without import or export
-const C = () => (
+const C = ({ totalVisitors }) => (
   <div>
     <Translate
-      count={props.totalVisitors}
-      totalViews={numeral(props.totalVisitors).format("0,0")}
+      count={totalVisitors}
+      totalViews={numeral(totalVisitors).format("0,0")}
       i18nKey="key_with_html"
     />
   </div>
@@ -76,6 +79,7 @@ const C = () => (
 
 export default C;
         `.trim(),
+    // 4
     `
 // Simplified file without import or export
 const C = () => (

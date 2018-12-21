@@ -1,5 +1,6 @@
 import template from "@babel/template";
 import { looksLike } from "../utils";
+const parser = require("@babel/parser");
 
 const withNamespacesImportAST = template(
   `
@@ -65,7 +66,15 @@ export default function(babel) {
             const translations = options.allTranslations[localeKey];
             const translation = getTranslation(translations, key.split("."));
             if (!translation) {
-              throw new Error(`Missing translation for ${localeKey}.${key}`);
+              const fallbackLocale = options.allTranslations[
+                options.fallbackLocale
+              ];
+              if (getTranslation(fallbackLocale, key.split("."))) {
+                console.log(`Missing translation for ${localeKey}.${key}`);
+                return;
+              } else {
+                throw new Error(`Missing translation for ${localeKey}.${key}`);
+              }
             }
             if (typeof translation === "object") {
               return Object.keys(
@@ -84,6 +93,86 @@ export default function(babel) {
                 : tFunctionCall
             )
           );
+
+          // Make sure t is in scope
+          const componentParentFunction = path.findParent(n => looksLike(n, {
+            type: "ArrowFunctionExpression",
+            parent: {
+              type: "VariableDeclarator"
+            }
+          }));
+
+          const tDestructuring = parser.parseExpression("{ t }");
+          const tAndPropsDestructuring = parser.parseExpression(
+            "{ t, ...props }"
+          );
+          const destructureT = param => {
+            if (!param) {
+              return [tDestructuring];
+            }
+            if (
+              looksLike(param, {
+                type: "Identifier",
+                name: "props"
+              })
+            ) {
+              return [tAndPropsDestructuring];
+            }
+            if (param.type === "Identifier") {
+              throw new Error(
+                `The parameter was named ${param.name}, expected "props"`
+              );
+            }
+
+            // change nothing if t is already destructured
+            if (
+              looksLike(param, {
+                type: "ObjectPattern",
+                properties: nodes => nodes.find(node => {
+                  return looksLike(node, {
+                    type: "ObjectProperty",
+                    key: {
+                      type: "Identifier",
+                      name: "t"
+                    },
+                    value: {
+                      type: "Identifier",
+                      name: "t"
+                    }
+                  });
+                })
+              })
+            ) {
+              return [param];
+            }
+
+            // Otherwise if parms is an ObjectPattern merge in the t ObjectProperty
+            if (
+              looksLike(param, {
+                type: "ObjectPattern"
+              })
+            ) {
+              param.properties.unshift(tDestructuring.properties[0]);
+              return [param];
+            }
+
+            // This shouldn't happen
+            throw new Error(`Unexpected first parameter: ${param}`);
+          };
+          const params = componentParentFunction.node.params;
+          switch (params.length) {
+            case 0:
+              componentParentFunction.node.params = destructureT();
+              break;
+            case 1:
+              componentParentFunction.node.params = destructureT(params[0]);
+              break;
+            default:
+              // to many
+              throw new Error(
+                "To many parameters for component arrow function"
+              );
+          }
         }
       },
       Program: {
@@ -157,5 +246,6 @@ const getTranslation = (translations, [key, ...rest]) => {
 };
 
 const getOptions = opts => ({
-  allTranslations: opts.allTranslations
+  allTranslations: opts.allTranslations,
+  fallbackLocale: "en"
 });

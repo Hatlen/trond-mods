@@ -7,10 +7,10 @@ export const looksLike = (node, wantedNode) =>
     if (typeof wantedNodeValue === "function") {
       return wantedNodeValue(nodeValue);
     }
-    return primitive(wantedNode)
+    return primitive(wantedNodeValue)
       ? nodeValue === wantedNodeValue
       : looksLike(nodeValue, wantedNodeValue);
   });
 
 const primitive = value =>
-  value == null || (typeof value).match(/^(string|number|boolean)/);
+  value == null || /^(string|number|boolean)/.test(typeof value);

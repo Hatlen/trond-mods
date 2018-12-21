@@ -25,12 +25,13 @@ exports.default = void 0;
 
 var _reactI18next = require(\\"react-i18next\\");
 
-var C = function C(props) {
-  return React.createElement(\\"div\\", null, t(\\"key\\", {
-    count: props.totalVisitors,
-    totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
-  }));
-};
+const C = ({
+  t,
+  ...props
+}) => React.createElement(\\"div\\", null, t(\\"key\\", {
+  count: props.totalVisitors,
+  totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
+}));
 
 var _default = (0, _reactI18next.withNamespaces)(C);
 
@@ -40,7 +41,7 @@ exports.default = _default;
 
 exports[`Translate-to-withNamespaces-t 2. Translate-to-withNamespaces-t: 2. Translate-to-withNamespaces-t 1`] = `
 "
-const C = () => (
+const C = ({ t }) => (
   <div>
     <Translate
       count={props.totalVisitors}
@@ -63,12 +64,12 @@ exports.default = void 0;
 
 var _reactI18next = require(\\"react-i18next\\");
 
-var C = function C() {
-  return React.createElement(\\"div\\", null, t(\\"key_with_pluralization\\", {
-    count: props.totalVisitors,
-    totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
-  }));
-};
+const C = ({
+  t
+}) => React.createElement(\\"div\\", null, t(\\"key_with_pluralization\\", {
+  count: props.totalVisitors,
+  totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
+}));
 
 var _default = (0, _reactI18next.withNamespaces)(C);
 
@@ -79,11 +80,11 @@ exports.default = _default;
 exports[`Translate-to-withNamespaces-t 3. Translate-to-withNamespaces-t: 3. Translate-to-withNamespaces-t 1`] = `
 "
 // Simplified file without import or export
-const C = () => (
+const C = ({ totalVisitors }) => (
   <div>
     <Translate
-      count={props.totalVisitors}
-      totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
+      count={totalVisitors}
+      totalViews={numeral(totalVisitors).format(\\"0,0\\")}
       i18nKey=\\"key_with_html\\"
     />
   </div>
@@ -103,12 +104,13 @@ exports.default = void 0;
 var _reactI18next = require(\\"react-i18next\\");
 
 // Simplified file without import or export
-var C = function C() {
-  return React.createElement(\\"div\\", null, safeT(t(\\"key_with_html\\", {
-    count: props.totalVisitors,
-    totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
-  })));
-};
+const C = ({
+  t,
+  totalVisitors
+}) => React.createElement(\\"div\\", null, safeT(t(\\"key_with_html\\", {
+  count: totalVisitors,
+  totalViews: numeral(totalVisitors).format(\\"0,0\\")
+})));
 
 var _default = (0, _reactI18next.withNamespaces)(C);
 
@@ -143,12 +145,12 @@ exports.default = void 0;
 var _reactI18next = require(\\"react-i18next\\");
 
 // Simplified file without import or export
-var C = function C() {
-  return React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
-    count: props.totalVisitors,
-    totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
-  })));
-};
+const C = ({
+  t
+}) => React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
+  count: props.totalVisitors,
+  totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
+})));
 
 var _default = (0, _reactI18next.withNamespaces)(C);
 
