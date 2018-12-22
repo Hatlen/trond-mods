@@ -7,6 +7,11 @@ const withNamespacesImportAST = template(
   import { withNamespaces } from 'react-i18next';
 `
 )();
+const safeTImportAST = template(
+  `
+  import safeT from 'lib/safeT';
+`
+)();
 
 export default function(babel) {
   const { types: t } = babel;
@@ -88,9 +93,15 @@ export default function(babel) {
               return translation.match(/</);
             }
           });
-          const functionCall = translationContainsHTML
-            ? t.callExpression(t.identifier("safeT"), [tFunctionCall])
-            : tFunctionCall;
+          let functionCall;
+          if (translationContainsHTML) {
+            functionCall = t.callExpression(t.identifier("safeT"), [
+              tFunctionCall
+            ]);
+            file.set("needsSafeT");
+          } else {
+            functionCall = tFunctionCall;
+          }
 
           if (path.parent.type === "JSXElement") {
             path.replaceWith(t.jsxExpressionContainer(functionCall));
@@ -131,6 +142,7 @@ export default function(babel) {
       Program: {
         enter(path, { file }) {
           file.set("hadTranslate", false);
+          file.set("needsSafeT", false);
         },
         exit(path, { file }) {
           if (file.get("hadTranslate")) {
@@ -151,6 +163,10 @@ export default function(babel) {
               path.get(`body.${translateImportIndex}`).remove();
             }
 
+            if (file.get("needsSafeT")) {
+              // Add safeT import
+              path.unshiftContainer("body", safeTImportAST);
+            }
             // Add withNamespacesImport
             const hasWithNamespacesImport = path.node.body.find(
               node => looksLike(node, {
