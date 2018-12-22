@@ -27,9 +27,12 @@ export default function(babel) {
           file.set("hadTranslate", true);
           const options = getOptions(opts);
           const attributes = path.node.openingElement.attributes;
-          const key = attributes.find(
-            n => n.name.name === "i18nKey"
-          ).value.value;
+          const keyNode = attributes.find(n => n.name.name === "i18nKey");
+          if (keyNode.value.type !== "StringLiteral") {
+            console.log("KeyNode is not a StringLiteral (TODO)");
+            return;
+          }
+          const key = keyNode.value.value;
           const objectPropertyNodes = attributes.filter(
             n => n.name.name !== "i18nKey"
           );
@@ -85,14 +88,15 @@ export default function(babel) {
               return translation.match(/</);
             }
           });
+          const functionCall = translationContainsHTML
+            ? t.callExpression(t.identifier("safeT"), [tFunctionCall])
+            : tFunctionCall;
 
-          path.replaceWith(
-            t.jsxExpressionContainer(
-              translationContainsHTML
-                ? t.callExpression(t.identifier("safeT"), [tFunctionCall])
-                : tFunctionCall
-            )
-          );
+          if (path.parent.type === "JSXElement") {
+            path.replaceWith(t.jsxExpressionContainer(functionCall));
+          } else {
+            path.replaceWith(functionCall);
+          }
 
           // Make sure t is in scope
           const componentParentFunction = path.findParent(n => looksLike(n, {
@@ -102,76 +106,25 @@ export default function(babel) {
             }
           }));
 
-          const tDestructuring = parser.parseExpression("{ t }");
-          const tAndPropsDestructuring = parser.parseExpression(
-            "{ t, ...props }"
-          );
-          const destructureT = param => {
-            if (!param) {
-              return [tDestructuring];
+          if (componentParentFunction) {
+            const params = componentParentFunction.node.params;
+            switch (params.length) {
+              case 0:
+                componentParentFunction.node.params = destructureT();
+                break;
+              case 1:
+                componentParentFunction.node.params = destructureT(params[0]);
+                break;
+              default:
+                // to many
+                throw new Error(
+                  "To many parameters for component arrow function"
+                );
             }
-            if (
-              looksLike(param, {
-                type: "Identifier",
-                name: "props"
-              })
-            ) {
-              return [tAndPropsDestructuring];
-            }
-            if (param.type === "Identifier") {
-              throw new Error(
-                `The parameter was named ${param.name}, expected "props"`
-              );
-            }
-
-            // change nothing if t is already destructured
-            if (
-              looksLike(param, {
-                type: "ObjectPattern",
-                properties: nodes => nodes.find(node => {
-                  return looksLike(node, {
-                    type: "ObjectProperty",
-                    key: {
-                      type: "Identifier",
-                      name: "t"
-                    },
-                    value: {
-                      type: "Identifier",
-                      name: "t"
-                    }
-                  });
-                })
-              })
-            ) {
-              return [param];
-            }
-
-            // Otherwise if parms is an ObjectPattern merge in the t ObjectProperty
-            if (
-              looksLike(param, {
-                type: "ObjectPattern"
-              })
-            ) {
-              param.properties.unshift(tDestructuring.properties[0]);
-              return [param];
-            }
-
-            // This shouldn't happen
-            throw new Error(`Unexpected first parameter: ${param}`);
-          };
-          const params = componentParentFunction.node.params;
-          switch (params.length) {
-            case 0:
-              componentParentFunction.node.params = destructureT();
-              break;
-            case 1:
-              componentParentFunction.node.params = destructureT(params[0]);
-              break;
-            default:
-              // to many
-              throw new Error(
-                "To many parameters for component arrow function"
-              );
+          } else {
+            console.log(
+              "Oh no not an arrow function, TODO: manually make sure t function is in scope"
+            );
           }
         }
       },
@@ -249,3 +202,61 @@ const getOptions = opts => ({
   allTranslations: opts.allTranslations,
   fallbackLocale: "en"
 });
+
+const destructureT = param => {
+  const tDestructuring = parser.parseExpression("({ t }) => {}").params[0];
+  const tAndPropsDestructuring = parser.parseExpression(
+    "({ t, ...props }) => {}"
+  ).params[0];
+
+  if (!param) {
+    return [tDestructuring];
+  }
+  if (
+    looksLike(param, {
+      type: "Identifier",
+      name: "props"
+    })
+  ) {
+    return [tAndPropsDestructuring];
+  }
+  if (param.type === "Identifier") {
+    throw new Error(`The parameter was named ${param.name}, expected "props"`);
+  }
+
+  // change nothing if t is already destructured
+  if (
+    looksLike(param, {
+      type: "ObjectPattern",
+      properties: nodes => nodes.find(node => {
+        return looksLike(node, {
+          type: "ObjectProperty",
+          key: {
+            type: "Identifier",
+            name: "t"
+          },
+          value: {
+            type: "Identifier",
+            name: "t"
+          }
+        });
+      })
+    })
+  ) {
+    return [param];
+  }
+
+  // Otherwise if parms is an ObjectPattern merge in the t ObjectProperty
+  if (
+    looksLike(param, {
+      type: "ObjectPattern"
+    })
+  ) {
+    param.properties.unshift(tDestructuring.properties[0]);
+    return [param];
+  }
+
+  // This shouldn't happen
+  console.log({ param });
+  throw new Error(`Unexpected first parameter: ${param}`);
+};

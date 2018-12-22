@@ -22,6 +22,6 @@
   "scripts": {
     "test": "jest",
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
-    "codemod": "git checkout *test* && codemod --plugin mods/translate-component-to-t-function/index.js mods/translate-component-to-t-function/testFile.js  -o Translate-to-withNamespaces-t=@allTranslations.json && git diff *test*"
+    "codemod": "git checkout *test* && codemod --plugin mods/translate-component-to-t-function/index.js mods/translate-component-to-t-function/testFile*  -o Translate-to-withNamespaces-t=@allTranslations.json && git diff *test*"
   }
 }

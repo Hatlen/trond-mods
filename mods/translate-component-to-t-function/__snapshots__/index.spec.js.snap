@@ -128,6 +128,7 @@ const C = () => (
       totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
       i18nKey=\\"key_with_pluralization_and_html\\"
     />
+    {something ? (<Translate i18nKey=\\"key\\" />) : (<Translate i18nKey=\\"key\\" />)}
   </div>
 );
 
@@ -150,7 +151,7 @@ const C = ({
 }) => React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
   count: props.totalVisitors,
   totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
-})));
+})), something ? t(\\"key\\") : t(\\"key\\"));
 
 var _default = (0, _reactI18next.withNamespaces)(C);
 
