@@ -38,6 +38,8 @@ pluginTester({
   tests: [
     // 1
     `
+import Translate from 'components/Translate';
+
 const C = (props) => (
   <div>
     <Translate
@@ -52,6 +54,8 @@ export default C;
         `.trim(),
     // 2
     `
+import Translate from 'components/Translate';
+
 const C = ({ t }) => (
   <div>
     <Translate
@@ -66,7 +70,8 @@ export default C;
         `.trim(),
     // 3
     `
-// Simplified file without import or export
+import Translate from 'components/Translate';
+
 const C = ({ totalVisitors }) => (
   <div>
     <Translate
@@ -81,7 +86,8 @@ export default C;
         `.trim(),
     // 4
     `
-// Simplified file without import or export
+import Translate from 'components/Translate';
+
 const C = () => (
   <div>
     <Translate
