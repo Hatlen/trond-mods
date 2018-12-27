@@ -125,7 +125,12 @@ export default function(babel) {
                 break;
               case 1:
                 componentParentFunction.node.params = destructureT(params[0]);
-                file.set("destructuredTFromProps", true);
+                file.set(
+                  "destructuredTFromProps",
+                  file
+                    .get("destructuredTFromProps")
+                    .add(componentParentFunction)
+                );
                 break;
               default:
                 // to many
@@ -144,7 +149,7 @@ export default function(babel) {
         enter(path, { file }) {
           file.set("hadTranslate", false);
           file.set("needsSafeT", false);
-          file.set("destructuredTFromProps", false);
+          file.set("destructuredTFromProps", new Set());
         },
         exit(path, { file }) {
           if (file.get("hadTranslate")) {
@@ -171,7 +176,8 @@ export default function(babel) {
             }
 
             // use the t identifier directly instead of from props
-            if (file.get("destructuredTFromProps")) {
+            const destructuredTFromProps = file.get("destructuredTFromProps");
+            if (destructuredTFromProps.size) {
               path.traverse({
                 MemberExpression(path) {
                   if (
@@ -184,7 +190,7 @@ export default function(babel) {
                         type: "Identifier",
                         name: "t"
                       }
-                    })
+                    }) && path.find(path => destructuredTFromProps.has(path))
                   ) {
                     path.replaceWith(t.identifier("t"));
                   }
