@@ -162,3 +162,45 @@ var _default = (0, _reactI18next.withNamespaces)(C);
 exports.default = _default;
 "
 `;
+
+exports[`Translate-to-withNamespaces-t 5. Translate-to-withNamespaces-t: 5. Translate-to-withNamespaces-t 1`] = `
+"
+import Translate from 'components/Translate';
+
+const C = (props) => (
+  <div>
+    <Translate
+      count={props.totalVisitors}
+      totalViews={numeral(props.totalVisitors).format(\\"0,0\\")}
+      i18nKey=\\"key_with_pluralization_and_html\\"
+    />
+    {props.t('key')}
+  </div>
+);
+
+export default C;
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+\\"use strict\\";
+
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+exports.default = void 0;
+
+var _reactI18next = require(\\"react-i18next\\");
+
+const C = ({
+  t,
+  ...props
+}) => React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
+  count: props.totalVisitors,
+  totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
+})), t('key'));
+
+var _default = (0, _reactI18next.withNamespaces)(C);
+
+exports.default = _default;
+"
+`;

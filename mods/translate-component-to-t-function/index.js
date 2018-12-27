@@ -125,6 +125,7 @@ export default function(babel) {
                 break;
               case 1:
                 componentParentFunction.node.params = destructureT(params[0]);
+                file.set("destructuredTFromProps", true);
                 break;
               default:
                 // to many
@@ -143,6 +144,7 @@ export default function(babel) {
         enter(path, { file }) {
           file.set("hadTranslate", false);
           file.set("needsSafeT", false);
+          file.set("destructuredTFromProps", false);
         },
         exit(path, { file }) {
           if (file.get("hadTranslate")) {
@@ -167,6 +169,29 @@ export default function(babel) {
               // Add safeT import
               path.unshiftContainer("body", safeTImportAST);
             }
+
+            // use the t identifier directly instead of from props
+            if (file.get("destructuredTFromProps")) {
+              path.traverse({
+                MemberExpression(path) {
+                  if (
+                    looksLike(path.node, {
+                      object: {
+                        type: "Identifier",
+                        name: "props"
+                      },
+                      property: {
+                        type: "Identifier",
+                        name: "t"
+                      }
+                    })
+                  ) {
+                    path.replaceWith(t.identifier("t"));
+                  }
+                }
+              });
+            }
+
             // Add withNamespacesImport
             const hasWithNamespacesImport = path.node.body.find(
               node => looksLike(node, {

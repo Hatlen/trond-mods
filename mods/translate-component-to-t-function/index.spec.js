@@ -100,6 +100,23 @@ const C = () => (
 );
 
 export default C;
+        `.trim(),
+    // 5
+    `
+import Translate from 'components/Translate';
+
+const C = (props) => (
+  <div>
+    <Translate
+      count={props.totalVisitors}
+      totalViews={numeral(props.totalVisitors).format("0,0")}
+      i18nKey="key_with_pluralization_and_html"
+    />
+    {props.t('key')}
+  </div>
+);
+
+export default C;
         `.trim()
   ]
 });
