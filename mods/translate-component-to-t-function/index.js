@@ -293,7 +293,7 @@ const destructureT = param => {
     return [param];
   }
 
-  // Otherwise if parms is an ObjectPattern merge in the t ObjectProperty
+  // Otherwise if params is an ObjectPattern merge in the t ObjectProperty
   if (
     looksLike(param, {
       type: "ObjectPattern"
