@@ -167,14 +167,21 @@ export default function(babel) {
               })
             );
 
-            if (declarations.length > 1) {
-              throw new Error(
-                "Too many props destructuring declarations, expected just one"
-              );
+            switch (declarations.length) {
+              case 0:
+                const tDestructuring = parser.parse(
+                  "const { t } = this.props;"
+                );
+                parentRenderFunction.node.body.body.unshift(tDestructuring);
+                break;
+              case 1:
+                destructureT(declarations[0].declarations[0].id);
+                break;
+              default:
+                throw new Error(
+                  "Too many props destructuring declarations, expected just one"
+                );
             }
-            const objectPattern = destructureT(
-              declarations[0].declarations[0].id
-            );
 
             file.set(
               "destructuredTFromProps",

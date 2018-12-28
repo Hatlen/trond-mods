@@ -141,6 +141,28 @@ class C extends Component {
 }
 
 export default C;
+        `.trim(),
+    // 7
+    `
+import { Component } from 'react';
+import Translate from 'components/Translate';
+
+class C extends Component {
+  render() {
+    return (
+      <div>
+        <Translate
+          count={this.props.totalVisitors}
+          totalViews={numeral(this.props.totalVisitors).format("0,0")}
+          i18nKey="key_with_pluralization_and_html"
+        />
+        {this.props.t('key')}
+      </div>
+    );
+  }
+}
+
+export default C;
         `.trim()
   ]
 });
