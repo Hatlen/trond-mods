@@ -117,6 +117,30 @@ const C = (props) => (
 );
 
 export default C;
+        `.trim(),
+    // 6
+    `
+import { Component } from 'react';
+import Translate from 'components/Translate';
+
+class C extends Component {
+  render() {
+    const { totalVisitors } = this.props;
+
+    return (
+      <div>
+        <Translate
+          count={totalVisitors}
+          totalViews={numeral(this.props.totalVisitors).format("0,0")}
+          i18nKey="key_with_pluralization_and_html"
+        />
+        {this.props.t('key')}
+      </div>
+    );
+  }
+}
+
+export default C;
         `.trim()
   ]
 });

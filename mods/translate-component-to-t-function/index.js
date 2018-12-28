@@ -109,27 +109,40 @@ export default function(babel) {
             path.replaceWith(functionCall);
           }
 
-          // Make sure t is in scope
-          const componentParentFunction = path.findParent(n => looksLike(n, {
-            type: "ArrowFunctionExpression",
-            parent: {
-              type: "VariableDeclarator"
+          // Make sure t is in scope in ArrowFunctions
+          const parentComponentArrowFunction = path.findParent(
+            n => looksLike(n, {
+              type: "ArrowFunctionExpression",
+              parent: {
+                type: "VariableDeclarator"
+              }
+            })
+          );
+
+          const parentRenderFunction = path.findParent(n => looksLike(n, {
+            type: "ClassMethod",
+            node: {
+              key: {
+                name: "render"
+              }
             }
           }));
 
-          if (componentParentFunction) {
-            const params = componentParentFunction.node.params;
+          if (parentComponentArrowFunction) {
+            const params = parentComponentArrowFunction.node.params;
             switch (params.length) {
               case 0:
-                componentParentFunction.node.params = destructureT();
+                parentComponentArrowFunction.node.params = [destructureT()];
                 break;
               case 1:
-                componentParentFunction.node.params = destructureT(params[0]);
+                parentComponentArrowFunction.node.params = [
+                  destructureT(params[0])
+                ];
                 file.set(
                   "destructuredTFromProps",
                   file
                     .get("destructuredTFromProps")
-                    .add(componentParentFunction)
+                    .add(parentComponentArrowFunction)
                 );
                 break;
               default:
@@ -138,9 +151,35 @@ export default function(babel) {
                   "To many parameters for component arrow function"
                 );
             }
+          } else if (parentRenderFunction) {
+            const declarations = parentRenderFunction.node.body.body.filter(
+              node => looksLike(node, {
+                type: "VariableDeclaration",
+                declarations: declarations =>
+                  declarations.find(declaration => looksLike(declaration, {
+                    type: "VariableDeclarator",
+                    init: {
+                      property: {
+                        name: "props"
+                      }
+                    }
+                  }))
+              })
+            );
+
+            if (declarations.length > 1) {
+              throw new Error(
+                "Too many props destructuring declarations, expected just one"
+              );
+            }
+            const objectPattern = destructureT(
+              declarations[0].declarations[0].id
+            );
+
+            console.log("render function in class");
           } else {
             console.log(
-              "Oh no not an arrow function, TODO: manually make sure t function is in scope"
+              "Oh no not an component arrow function or a class render function, TODO: manually make sure t function is in scope"
             );
           }
         }
@@ -257,7 +296,7 @@ const destructureT = param => {
   ).params[0];
 
   if (!param) {
-    return [tDestructuring];
+    return tDestructuring;
   }
   if (
     looksLike(param, {
@@ -265,7 +304,7 @@ const destructureT = param => {
       name: "props"
     })
   ) {
-    return [tAndPropsDestructuring];
+    return tAndPropsDestructuring;
   }
   if (param.type === "Identifier") {
     throw new Error(`The parameter was named ${param.name}, expected "props"`);
@@ -290,7 +329,7 @@ const destructureT = param => {
       })
     })
   ) {
-    return [param];
+    return param;
   }
 
   // Otherwise if params is an ObjectPattern merge in the t ObjectProperty
@@ -300,7 +339,7 @@ const destructureT = param => {
     })
   ) {
     param.properties.unshift(tDestructuring.properties[0]);
-    return [param];
+    return param;
   }
 
   // This shouldn't happen
