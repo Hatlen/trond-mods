@@ -33,11 +33,6 @@ export default function(babel) {
           const options = getOptions(opts);
           const attributes = path.node.openingElement.attributes;
           const keyNode = attributes.find(n => n.name.name === "i18nKey");
-          if (keyNode.value.type !== "StringLiteral") {
-            console.log("KeyNode is not a StringLiteral (TODO)");
-            return;
-          }
-          const key = keyNode.value.value;
           const objectPropertyNodes = attributes.filter(
             n => n.name.name !== "i18nKey"
           );
@@ -45,10 +40,12 @@ export default function(babel) {
           // transform <Translate i18nKey="key" name={props.name} />
           // to { t('key', { name: props.name }) }
 
-          const tFunctionCall = t.callExpression(
+          let functionCall = t.callExpression(
             t.identifier("t"),
             [
-              t.stringLiteral(key),
+              keyNode.value.type === "StringLiteral"
+                ? keyNode.value
+                : keyNode.value.expression,
               objectPropertyNodes.length
                 ? t.objectExpression(
                     objectPropertyNodes.map(node =>
@@ -68,39 +65,46 @@ export default function(babel) {
             );
           }
 
-          const translationContainsHTML = Object.keys(
-            options.allTranslations
-          ).find(localeKey => {
-            const translations = options.allTranslations[localeKey];
-            const translation = getTranslation(translations, key.split("."));
-            if (!translation) {
-              const fallbackLocale = options.allTranslations[
-                options.fallbackLocale
-              ];
-              if (getTranslation(fallbackLocale, key.split("."))) {
-                console.log(`Missing translation for ${localeKey}.${key}`);
-                return;
-              } else {
-                throw new Error(`Missing translation for ${localeKey}.${key}`);
+          if (keyNode.value.type === "StringLiteral") {
+            const key = keyNode.value.value;
+            const translationContainsHTML = Object.keys(
+              options.allTranslations
+            ).find(localeKey => {
+              const translations = options.allTranslations[localeKey];
+              const translation = getTranslation(translations, key.split("."));
+              if (!translation) {
+                const fallbackLocale = options.allTranslations[
+                  options.fallbackLocale
+                ];
+                if (getTranslation(fallbackLocale, key.split("."))) {
+                  console.log(`Missing translation for ${localeKey}.${key}`);
+                  return;
+                } else {
+                  throw new Error(
+                    `Missing translation for ${localeKey}.${key}`
+                  );
+                }
               }
+              if (typeof translation === "object") {
+                return Object.keys(
+                  translation
+                ).find(objectTranslationKey =>
+                  translation[objectTranslationKey].match(/</));
+              } else {
+                return translation.match(/</);
+              }
+            });
+
+            if (translationContainsHTML) {
+              functionCall = t.callExpression(t.identifier("safeT"), [
+                functionCall
+              ]);
+              file.set("needsSafeT");
             }
-            if (typeof translation === "object") {
-              return Object.keys(
-                translation
-              ).find(objectTranslationKey =>
-                translation[objectTranslationKey].match(/</));
-            } else {
-              return translation.match(/</);
-            }
-          });
-          let functionCall;
-          if (translationContainsHTML) {
-            functionCall = t.callExpression(t.identifier("safeT"), [
-              tFunctionCall
-            ]);
-            file.set("needsSafeT");
           } else {
-            functionCall = tFunctionCall;
+            console.log(
+              `KeyNode is not a StringLiteral TODO check if the translation contains html and needs to be wrapped with safeT: ${path.getSource()}`
+            );
           }
 
           if (path.parent.type === "JSXElement") {

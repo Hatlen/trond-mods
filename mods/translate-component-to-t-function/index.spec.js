@@ -163,6 +163,26 @@ class C extends Component {
 }
 
 export default C;
+        `.trim(),
+    // 7
+    `
+import { Component } from 'react';
+import Translate from 'components/Translate';
+
+class C extends Component {
+  render() {
+    const translationKey = 'key';
+
+    return (
+      <div>
+        <Translate i18nKey={translationKey} />
+        {this.props.t('key')}
+      </div>
+    );
+  }
+}
+
+export default C;
         `.trim()
   ]
 });
