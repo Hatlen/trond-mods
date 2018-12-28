@@ -251,7 +251,7 @@ class C extends _react.Component {
     return React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
       count: totalVisitors,
       totalViews: numeral(this.props.totalVisitors).format(\\"0,0\\")
-    })), this.props.t('key'));
+    })), t('key'));
   }
 
 }

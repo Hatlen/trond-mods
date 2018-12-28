@@ -176,7 +176,10 @@ export default function(babel) {
               declarations[0].declarations[0].id
             );
 
-            console.log("render function in class");
+            file.set(
+              "destructuredTFromProps",
+              file.get("destructuredTFromProps").add(parentRenderFunction)
+            );
           } else {
             console.log(
               "Oh no not an component arrow function or a class render function, TODO: manually make sure t function is in scope"
@@ -214,13 +217,14 @@ export default function(babel) {
               path.unshiftContainer("body", safeTImportAST);
             }
 
-            // use the t identifier directly instead of from props
+            // use the t identifier directly instead of from props or from
+            // this.props
             const destructuredTFromProps = file.get("destructuredTFromProps");
             if (destructuredTFromProps.size) {
               path.traverse({
                 MemberExpression(path) {
                   if (
-                    looksLike(path.node, {
+                    (looksLike(path.node, {
                       object: {
                         type: "Identifier",
                         name: "props"
@@ -229,7 +233,23 @@ export default function(babel) {
                         type: "Identifier",
                         name: "t"
                       }
-                    }) && path.find(path => destructuredTFromProps.has(path))
+                    }) ||
+                      looksLike(path.node, {
+                        object: {
+                          type: "MemberExpression",
+                          object: {
+                            type: "ThisExpression"
+                          },
+                          property: {
+                            name: "props"
+                          }
+                        },
+                        property: {
+                          type: "Identifier",
+                          name: "t"
+                        }
+                      })) &&
+                    path.find(path => destructuredTFromProps.has(path))
                   ) {
                     path.replaceWith(t.identifier("t"));
                   }
