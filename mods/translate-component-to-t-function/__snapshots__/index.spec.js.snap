@@ -35,7 +35,7 @@ const C = ({
   totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
 }));
 
-var _default = (0, _reactI18next.withNamespaces)(C);
+var _default = (0, _reactI18next.withNamespaces)()(C);
 
 exports.default = _default;
 "
@@ -75,7 +75,7 @@ const C = ({
   totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
 }));
 
-var _default = (0, _reactI18next.withNamespaces)(C);
+var _default = (0, _reactI18next.withNamespaces)()(C);
 
 exports.default = _default;
 "
@@ -116,7 +116,7 @@ const C = ({
   totalViews: numeral(totalVisitors).format(\\"0,0\\")
 })));
 
-var _default = (0, _reactI18next.withNamespaces)(C);
+var _default = (0, _reactI18next.withNamespaces)()(C);
 
 exports.default = _default;
 "
@@ -157,7 +157,7 @@ const C = ({
   totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
 })), something ? t(\\"key\\") : t(\\"key\\"));
 
-var _default = (0, _reactI18next.withNamespaces)(C);
+var _default = (0, _reactI18next.withNamespaces)()(C);
 
 exports.default = _default;
 "
@@ -199,7 +199,7 @@ const C = ({
   totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
 })), t('key'));
 
-var _default = (0, _reactI18next.withNamespaces)(C);
+var _default = (0, _reactI18next.withNamespaces)()(C);
 
 exports.default = _default;
 "
@@ -256,7 +256,7 @@ class C extends _react.Component {
 
 }
 
-var _default = (0, _reactI18next.withNamespaces)(C);
+var _default = (0, _reactI18next.withNamespaces)()(C);
 
 exports.default = _default;
 "
@@ -311,7 +311,7 @@ class C extends _react.Component {
 
 }
 
-var _default = (0, _reactI18next.withNamespaces)(C);
+var _default = (0, _reactI18next.withNamespaces)()(C);
 
 exports.default = _default;
 "
@@ -362,7 +362,7 @@ class C extends _react.Component {
 
 }
 
-var _default = (0, _reactI18next.withNamespaces)(C);
+var _default = (0, _reactI18next.withNamespaces)()(C);
 
 exports.default = _default;
 "

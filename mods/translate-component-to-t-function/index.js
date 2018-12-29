@@ -295,9 +295,10 @@ export default function(babel) {
                 .get(`body.${exportDeclarationIndex}`)
                 .replaceWith(
                   t.exportDefaultDeclaration(
-                    t.callExpression(t.identifier("withNamespaces"), [
-                      exportDeclaration.declaration
-                    ])
+                    t.callExpression(
+                      t.callExpression(t.identifier("withNamespaces"), []),
+                      [exportDeclaration.declaration]
+                    )
                   )
                 );
             }
