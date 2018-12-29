@@ -108,10 +108,14 @@ exports.default = void 0;
 
 var _reactI18next = require(\\"react-i18next\\");
 
+var _safeT = _interopRequireDefault(require(\\"lib/safeT\\"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const C = ({
   t,
   totalVisitors
-}) => React.createElement(\\"div\\", null, safeT(t(\\"key_with_html\\", {
+}) => React.createElement(\\"div\\", null, (0, _safeT.default)(t(\\"key_with_html\\", {
   count: totalVisitors,
   totalViews: numeral(totalVisitors).format(\\"0,0\\")
 })));
@@ -150,9 +154,13 @@ exports.default = void 0;
 
 var _reactI18next = require(\\"react-i18next\\");
 
+var _safeT = _interopRequireDefault(require(\\"lib/safeT\\"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const C = ({
   t
-}) => React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
+}) => React.createElement(\\"div\\", null, (0, _safeT.default)(t(\\"key_with_pluralization_and_html\\", {
   count: props.totalVisitors,
   totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
 })), something ? t(\\"key\\") : t(\\"key\\"));
@@ -191,10 +199,14 @@ exports.default = void 0;
 
 var _reactI18next = require(\\"react-i18next\\");
 
+var _safeT = _interopRequireDefault(require(\\"lib/safeT\\"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const C = ({
   t,
   ...props
-}) => React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
+}) => React.createElement(\\"div\\", null, (0, _safeT.default)(t(\\"key_with_pluralization_and_html\\", {
   count: props.totalVisitors,
   totalViews: numeral(props.totalVisitors).format(\\"0,0\\")
 })), t('key'));
@@ -240,7 +252,11 @@ exports.default = void 0;
 
 var _reactI18next = require(\\"react-i18next\\");
 
+var _safeT = _interopRequireDefault(require(\\"lib/safeT\\"));
+
 var _react = require(\\"react\\");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class C extends _react.Component {
   render() {
@@ -248,7 +264,7 @@ class C extends _react.Component {
       t,
       totalVisitors
     } = this.props;
-    return React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
+    return React.createElement(\\"div\\", null, (0, _safeT.default)(t(\\"key_with_pluralization_and_html\\", {
       count: totalVisitors,
       totalViews: numeral(this.props.totalVisitors).format(\\"0,0\\")
     })), t('key'));
@@ -295,7 +311,11 @@ exports.default = void 0;
 
 var _reactI18next = require(\\"react-i18next\\");
 
+var _safeT = _interopRequireDefault(require(\\"lib/safeT\\"));
+
 var _react = require(\\"react\\");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class C extends _react.Component {
   render() {
@@ -303,7 +323,7 @@ class C extends _react.Component {
       t
     } = this.props;
 
-    return React.createElement(\\"div\\", null, safeT(t(\\"key_with_pluralization_and_html\\", {
+    return React.createElement(\\"div\\", null, (0, _safeT.default)(t(\\"key_with_pluralization_and_html\\", {
       count: this.props.totalVisitors,
       totalViews: numeral(this.props.totalVisitors).format(\\"0,0\\")
     })), t('key'));

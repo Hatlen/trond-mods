@@ -99,7 +99,7 @@ export default function(babel) {
               functionCall = t.callExpression(t.identifier("safeT"), [
                 functionCall
               ]);
-              file.set("needsSafeT");
+              file.set("needsSafeT", true);
             }
           } else {
             console.log(
